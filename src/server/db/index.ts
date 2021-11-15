@@ -1,23 +1,43 @@
 import * as mysql from 'mysql';
-import config from '../config';
+import chirps from './queries/chirps';
+import users from './queries/users';
 
-const pool = mysql.createPool(config.mysql);
 
-export const Query = <T = any>(query: string, values?: Array<any> | { [key: string]: string | number }) => {
-  return new Promise<T>((resolve, reject) => {
-    pool.query(query, values, (err, results) => {
-      if (err) {
-        reject(err);
+const pool = mysql.createPool ({
+    host: 'localhost',
+    user: 'chirprapp',
+    password: '$pswdtest2020',
+    database: 'chirpr'
+})
+
+export const Query = (query:string, _values?: any) => {
+  return newPromise((_resolve, _reject) => {
+    pool.query(query, (err, results) => {
+      if(err) {
+        console.log(err)
       } else {
-        resolve(results);
+        console.log(results);
       }
     });
   });
+};
+
+Query('DESCRIBE users')
+  .then((results: any) => {
+    console.log(results);
+    return Query('DESCRIBE chirps');
+})
+  .then((results: any) => console.log(results))
+  .catch((e: any) => console.log(e));
+
+  
+   
+
+
+function newPromise(_arg0: (resolve: any, reject: any) => any) {
+  throw new Error('Function not implemented.');
+}
+function results(results: any, arg1: (any: any) => void) {
+  throw new Error('Function not implemented.');
 }
 
-import chirps from './queries/chirps';
-import users from './queries/users';
-export default {
-  chirps,
-  users
-}

@@ -1,33 +1,49 @@
-import * as React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
-import Home from './pages/Home';
-import Details from './pages/Details';
-import Edit from './pages/Edit';
+const fetchChirps = () => {
 
-const App: React.FC<IAppProps> = () => {
-	return(
-		<BrowserRouter>
-			<Container>
-				<Switch>
-					<Route exact path="/">
-						<Home />
-					</Route>
-					<Route exact path="/chirps/details/:chirpid">
-						<Details />
-					</Route>
-					<Route exact path="/chirps/edit/:chirpid">
-						<Edit />
-					</Route>
-					<Route>
-						{() => <h1>404</h1>}
-					</Route>
-				</Switch>
-			</Container>
-		</BrowserRouter>
-	);
+const postChirp = (e) => {
+    e.preventDefault()
+
+    $.post({
+        url: "/api/chirps",
+        data: JSON.stringify({
+            username: $("#username-input").val(),
+            message: $("#message-input").val()
+        }),
+        contentType: 'application/json',
+        success: () => {
+            $("#chirp-list").empty();
+            fetchChirps();
+        }
+    });
+};
+
+const deleteChirp = id => {
+    $.ajax({
+        url: `/api/chirps/${id}`,
+        method: "DELETE",
+        success: () => {
+            $("#chirp-list").empty();
+            fetchChirps();
+        }
+    });
 }
 
-interface IAppProps {}
+const editChirp = id => {
+    $.ajax({
+        url: `/api/chirps/${id}`,
+        method: "PUT",
+        data: JSON.stringify({
+            username: $(`#edit-username${id}`).val(),
+            message:  $(`#edit-message${id}`).val()
+        }),
+        contentType: 'application/json',
+        success: () => {
+            $("#chirp-list").empty();
+            fetchChirps();
+        }
+    });
+}
 
-export default App;
+$("#submit-btn").click((e) => postChirp(e))
+
+fetchChirps();
