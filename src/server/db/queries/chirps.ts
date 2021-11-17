@@ -1,4 +1,4 @@
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+
 import { Query } from '../';
 
 interface IChirpsT {
@@ -11,7 +11,7 @@ interface IChirpsT {
 
 }
 
-const all = () => Query<IChirpsT[]>('SELECT chirps.*, users.username FROM chirps JOIN users ON users.id = chirps.userid ORDER BY chirps.id DESC');
+const all = () => Query<IChirpsT[]>('SELECT chirps.*, users.name FROM chirps JOIN users ON users.id = chirps.userid ORDER BY chirps.id DESC');
 
 const one = (id: number) => Query<IChirpsT[]>('SELECT chirps.*, users.username FROM chirps JOIN users ON users.id = chirps.userid WHERE chirps.id = ?', [id]);
 
